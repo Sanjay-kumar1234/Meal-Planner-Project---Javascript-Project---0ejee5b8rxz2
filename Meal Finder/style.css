@@ -189,7 +189,7 @@ Nav Bar Style end
 .recipeSection {
   display: flex;
   flex-direction: column;
-  background-color: #aaa;
+  background-color: #eae7e7;
 }
 
 .tab-button {
@@ -225,4 +225,30 @@ Nav Bar Style end
 
 .tab-content.active {
   display: block;
+}
+
+ul {
+  list-style-type: disc;
+  color: rgb(43, 41, 41);
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  padding-left: 100px;
+  align-items: center;
+}
+ol {
+  color: rgb(43, 41, 41);
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  padding-left: 100px;
+  align-items: center;
+}
+
+ul li,
+ol li {
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
 }

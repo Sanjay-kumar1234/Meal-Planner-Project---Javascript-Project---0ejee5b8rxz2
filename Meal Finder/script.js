@@ -19,6 +19,9 @@ const dinner = document.getElementById("dinner");
 const ingredients = document.getElementById("ingredients");
 const steps = document.getElementById("steps");
 
+const ingredientsBtn = document.getElementById("ingredientsBtn");
+const stepsBtn = document.getElementById("stepsBtn");
+
 let bmr = 1;
 function bmrCalculate() {
   const selectedGender = gender.options[gender.selectedIndex];
@@ -41,7 +44,7 @@ function bmrCalculate() {
       5.003 * parseInt(height.value) -
       6.755 * parseInt(age.value);
   } else {
-    bmr = 700;
+    bmr = 0;
   }
 
   if (activityLevelvalue === "light") {
@@ -51,9 +54,8 @@ function bmrCalculate() {
   } else if (activityLevelvalue === "active") {
     bmr *= 1.725;
   } else {
-    bmr = 700;
+    bmr = 0;
   }
-  console.log("Your bmr is -->  " + bmr);
 }
 
 const generateMealFn = (event) => {
@@ -61,17 +63,17 @@ const generateMealFn = (event) => {
 
   bmrCalculate();
 
-  if (breakFast.classList.contains("hidden")) {
-    breakFast.classList.remove("hidden");
-  }
+  // if (breakFast.classList.contains("hidden")) {
+  //   breakFast.classList.remove("hidden");
+  // }
 
-  if (lunch.classList.contains("hidden")) {
-    lunch.classList.remove("hidden");
-  }
+  // if (lunch.classList.contains("hidden")) {
+  //   lunch.classList.remove("hidden");
+  // }
 
-  if (dinner.classList.contains("hidden")) {
-    dinner.classList.remove("hidden");
-  }
+  // if (dinner.classList.contains("hidden")) {
+  //   dinner.classList.remove("hidden");
+  // }
   let id = 0;
   fetch(
     "https://content.newtonschool.co/v1/pr/64995a40e889f331d43f70ae/categories"
@@ -81,6 +83,12 @@ const generateMealFn = (event) => {
       const categories = data;
       categories.map((e) => {
         if (e.min <= bmr && e.max >= bmr) {
+          breakFast.classList.remove("hidden");
+
+          lunch.classList.remove("hidden");
+
+          dinner.classList.remove("hidden");
+
           breakFast.innerHTML = `
           <img id="mealImage" src="${e.breakfast.image}" alt="" height="180px" width="100%">
           <div>
@@ -102,7 +110,7 @@ const generateMealFn = (event) => {
           <div>
               <p class="mealName">${e.dinner.title}</p>
               <p class="mealCalory">Ready in minutes ${e.dinner.readyInMinutes}</p>
-              <button class="getMeal btn" mealId="${e.dinner.id}"   >Get Recipe ${e.dinner.id} </button>
+              <button class="getMeal btn" mealId="${e.dinner.id}"   >Get Recipe  </button>
           </div>`;
 
           const getRecipe = document.querySelectorAll(".getMeal");
@@ -119,13 +127,52 @@ const generateMealFn = (event) => {
                 .then((data) => {
                   data.forEach((e) => {
                     if (e.id == mealid) {
-                      ingredients.innerHTML = `${e.ingredients}`;
-                      steps.innerHTML = `${e.steps}`;
+                      ingredientsBtn.innerHTML = `Ingredients ( ${e.title} )`;
+                      stepsBtn.innerHTML = `Steps ( ${e.title} )`;
+                      const input = e.ingredients;
+                      const array = input.split(",");
+                      ingredients.innerHTML = "";
+                      steps.innerHTML = "";
+                      array.forEach((item) => {
+                        const liitem = document.createElement("li");
+                        liitem.innerHTML = item;
+                        if (liitem !== "") {
+                          ingredients.appendChild(liitem);
+                        }
+                      });
+                      // ingredients.innerHTML = `${e.ingredients}`;
+
+                      const stepInput = e.steps;
+                      const steparr = stepInput.split(".");
+
+                      steparr.forEach((item) => {
+                        const liitem = document.createElement("li");
+                        liitem.innerHTML = `${item}`;
+                        if (liitem.innerHTML !== "") {
+                          steps.appendChild(liitem);
+                        }
+                      });
+
+                      // steps.innerHTML = `${e.steps}`;
                     }
                   });
                 });
             };
           });
+        } else {
+          if (!breakFast.classList.contains("hidden")) {
+            breakFast.classList.add("hidden");
+          }
+
+          if (!lunch.classList.contains("hidden")) {
+            lunch.classList.add("hidden");
+          }
+
+          if (!dinner.classList.contains("hidden")) {
+            dinner.classList.add("hidden");
+          }
+
+          validateForm();
         }
       });
     });
@@ -138,10 +185,54 @@ const generateMealFn = (event) => {
 // - **Lightly active (exercise 1–3 days/week)**: BMR x 1.375
 // - **Moderately active (exercise 3–5 days/week)**: BMR x 1.55
 // - **Active (exercise 6–7 days/week)**: BMR x 1.725
-generateMeal.addEventListener("click", generateMealFn);
+function validateForm() {
+  // Clear previous error messages
+  clearErrors();
 
-const ingredientsBtn = document.getElementById("ingredientsBtn");
-const stepsBtn = document.getElementById("stepsBtn");
+  // Validate weight
+  if (weight.value === "") {
+    displayError("weightError", "**Weight is required**");
+    return false;
+  }
+
+  // Validate height
+  if (height.value === "") {
+    displayError("heightError", "**Height is required**");
+    return false;
+  }
+  // Validate age
+  if (age.value === "") {
+    displayError("ageError", "**Age is required**");
+    return false;
+  }
+  // Validate Gender
+  if (gender.value === "") {
+    displayError("genderError", "**Gender is not Selected**");
+  }
+
+  // Validate activityLevel
+
+  if (activityLevel.value === "") {
+    displayError("activityError", "**Please selecte activity level**");
+  }
+
+  // Form is valid, proceed with submission
+  return true;
+}
+
+function displayError(id, message) {
+  var errorElement = document.getElementById(id);
+  errorElement.innerText = message;
+}
+
+function clearErrors() {
+  var errorElements = document.getElementsByClassName("error");
+  for (var i = 0; i < errorElements.length; i++) {
+    errorElements[i].innerText = "";
+  }
+}
+
+generateMeal.addEventListener("click", generateMealFn);
 
 const ingredientsTab = document.getElementById("ingredientsTab");
 const stepsTab = document.getElementById("stepsTab");

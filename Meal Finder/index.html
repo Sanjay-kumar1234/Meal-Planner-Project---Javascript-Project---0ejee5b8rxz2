@@ -33,24 +33,35 @@
     </nav>
     <!-- UserForm -->
     <div class="UserForm">
-        <form action="">
+        <form action="post" onsubmit="return validateForm()">
             <ul>
                 <div>
                     <li>
-                        <input id="weight" type="number" min="0" placeholder="Enter your weight in kg">
+                        <span class="error" id="weightError"></span>
+                        <input id="weight" type="number" min="0" placeholder="Enter your weight in kg" required>
                     </li>
-                    <li><input id="height" type="number" placeholder="Enter your height in cm" min="0"></li>
-                    <li> <input id="age" type="number" min="0" placeholder="Enter your age"> </li>
+                    <li>
+                        <span class="error" id="heightError"></span>
+                        <input id="height" type="number" placeholder="Enter your height in cm" min="0" required>
+                    </li>
+                    <li>
+                        <span class="error" id="ageError"></span>
+                        <input id="age" type="number" min="0" placeholder="Enter your age" required>
+                    </li>
                 </div>
                 <div>
-                    <li><select name="gender" id="gender">
-                            <option value="Gender" selected>Gender</option>
+                    <li>
+                        <span class="error" id="genderError"></span>
+                        <select name="gender" id="gender" required>
+                            <option value="" selected>Select Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
-                        </select></li>
+                        </select>
+                    </li>
                     <li>
-                        <select name="activityLevel" id="activityLevel">
-                            <option value="activity level">Actiivity Level</option>
+                        <span class="error" id="activityError"></span>
+                        <select name="activityLevel" id="activityLevel" required>
+                            <option value="">Select Actiivity Level</option>
                             <option value="light">Light</option>
                             <option value="moderate">Moderate</option>
                             <option value="active">Active</option>
@@ -98,10 +109,12 @@
         </div>
 
         <div class="tab-content active" id="ingredientsTab">
-            <p class="ingredients" id="ingredients"></p>
+            <ul class="ingredients" id="ingredients">
+
+            </ul>
         </div>
         <div class="tab-content" id="stepsTab">
-            <p class="steps" id="steps"></p>
+            <ol class="steps" id="steps"></ol>
         </div>
 
     </div>
