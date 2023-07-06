@@ -1,37 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>Meal Finder</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-      <div class="container">
-          <h1>Meal Finder</h1>
-          <div class="flex">
-              <form class="flex" id="submit">
-                <input type="text" id="search" placeholder="Search for meals or keywords">
-                <button class="search-btn" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-              </form>
-              <button class="random-btn" id="random">
-                  <i class="fas fa-random"></i>
-              </button>
-          </div>
-          <div class="result-heading"></div>
-          <div id="meals" class="meals"></div>
-          <div id="single-meal"></div>
-      </div>
-    <!-- javascript file -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- navbar  -->
+    <nav>
+        <div class="logoContainer">
+            <div>
+                <a href="#home">
+                    <img src="https://img.freepik.com/free-vector/hand-drawn-healthy-food-logo-template_23-2149653126.jpg"
+                        alt="Meal Planner" height="40px">
+                </a>
+            </div>
+            <a href="#home">
+                <h2>Meal Planner</h2>
+            </a>
+        </div>
+        <div>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- UserForm -->
+    <div class="UserForm">
+        <form action="">
+            <ul>
+                <div>
+                    <li>
+                        <input id="weight" type="number" min="0" placeholder="Enter your weight in kg">
+                    </li>
+                    <li><input id="height" type="number" placeholder="Enter your height in cm" min="0"></li>
+                    <li> <input id="age" type="number" min="0" placeholder="Enter your age"> </li>
+                </div>
+                <div>
+                    <li><select name="gender" id="gender">
+                            <option value="Gender" selected>Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select></li>
+                    <li>
+                        <select name="activityLevel" id="activityLevel">
+                            <option value="activity level">Actiivity Level</option>
+                            <option value="light">Light</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="active">Active</option>
+                        </select>
+                    </li>
+                </div>
+            </ul>
+            <button id="generateMeal" type="submit">Generate Meal</button>
+        </form>
+    </div>
+
+    <!-- Meal Plan -->
+
+    <div class=" mealPlan">
+        <div class="mealCards hidden" id="breakFast">
+            <!-- <img id="mealImage" src="" alt="" height="180px" width="100%">
+            <div>
+                <p class="mealName">Meal Name</p>
+                <p class="mealCalory">Calories</p>
+                <button class="getMeal btn">Get Recipe</button>
+            </div> -->
+        </div>
+        <div class="mealCards hidden" id="lunch">
+            <!-- <img id="mealImage" src="" alt="" height="180x" width="100%">
+            <div>
+                <p class="mealName" id="mealName">Meal Name</p>
+                <p class="mealCalory" id="mealCalory">Calories</p>
+                <button class="getMeal btn">Get Recipe</button>
+            </div> -->
+        </div>
+        <div class="mealCards hidden" id="dinner">
+            <!-- <img id="mealImage" src="" alt="" height="180px" width="100%">
+            <div>
+                <p class="mealName">Meal Name</p>
+                <p class="mealCalory">Calories</p>
+                <button class="getMeal btn" id="getRecipe">Get Recipe</button>
+            </div> -->
+        </div>
+    </div>
+
+    <div class="recipeSection">
+        <div class="btn-container">
+            <button class="tab-button" id="ingredientsBtn">Ingredients</button>
+            <button class="tab-button" id="stepsBtn">Steps</button>
+        </div>
+
+        <div class="tab-content active" id="ingredientsTab">
+            <p class="ingredients" id="ingredients"></p>
+        </div>
+        <div class="tab-content" id="stepsTab">
+            <p class="steps" id="steps"></p>
+        </div>
+
+    </div>
+
+
+    <div id="about">
+
+        <h3>About Us</h3>
+        <p>This meal planner is made by Sanjay . This meal planner is good. if you follow the guideline . You can get
+            you goal easily</p>
+    </div>
     <script src="script.js"></script>
-  </body>
+</body>
+
 </html>

@@ -1,137 +1,168 @@
-const search = document.getElementById("search");
-const submit = document.getElementById("submit");
-const random = document.getElementById("random");
-const mealsEl = document.getElementById("meals");
-const resultHeading = document.getElementsByClassName(
-  "result-heading"
-);
-const single_mealEl = document.getElementById(
-  "single-meal"
-);
+// mealcard elements
+const mealName = document.getElementById("mealName");
+const mealCalory = document.getElementById("mealCalory");
+const mealImage = document.getElementById("mealImage");
 
-//SearchMeal from API
-function searchMeal(e) {
-  e.preventDefault();
+const weight = document.getElementById("weight");
+const height = document.getElementById("height");
+const age = document.getElementById("age");
+const gender = document.getElementById("gender");
+const activityLevel = document.getElementById("activityLevel");
+const generateMeal = document.getElementById("generateMeal");
 
-  // Clear single Meal
-  single_mealEl.innerHTML = "";
+const mealCard = document.getElementsByClassName("mealCards");
 
-  //get search Term
-  const term = search.value;
+const breakFast = document.getElementById("breakFast");
+const lunch = document.getElementById("lunch");
+const dinner = document.getElementById("dinner");
 
-  //Check for empty
-  if (term.trim()) {
-    fetch(
-      `https://www.themealdb.com/api/json/v1/1/search.php?s=${term}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        resultHeading.innerHTML = `<h2>Search Result For ${term} : </h2>`;
+const ingredients = document.getElementById("ingredients");
+const steps = document.getElementById("steps");
 
-        if (data.meals === null) {
-          resultHeading.innerHTML = `<h2> There are No Search results for ${term}</h2>`;
-        } else {
-          mealsEl.innerHTML = data.meals
-            .map(
-              (meal) => `
-                 <div class="meal">
-                 <img src="${meal.strMealThumb}" alt="${meal.strMeal}" />
-                 <div class="meal-info" data-mealID="${meal.idMeal}">
-                    <h3>${meal.strMeal}</h3>
-                 </div>
-                 </div>
-                `
-            )
-            .join("");
-        }
-      });
+let bmr = 1;
+function bmrCalculate() {
+  const selectedGender = gender.options[gender.selectedIndex];
+  const gendervalue = selectedGender.value;
+  const selectedActivity = activityLevel.options[activityLevel.selectedIndex];
+  const activityLevelvalue = selectedActivity.value;
 
-    //Clear Search Term
-    search.value = "";
+  if (gendervalue === "female") {
+    console.log("female");
+    bmr =
+      655.1 +
+      9.563 * parseInt(weight.value) +
+      1.85 * parseInt(height.value) -
+      4.676 * parseInt(age.value);
+  } else if (gendervalue === "male") {
+    console.log("male");
+    bmr =
+      66.47 +
+      13.75 * parseInt(weight.value) +
+      5.003 * parseInt(height.value) -
+      6.755 * parseInt(age.value);
   } else {
-    alert("please enter a search value");
+    bmr = 700;
   }
+
+  if (activityLevelvalue === "light") {
+    bmr *= 1.375;
+  } else if (activityLevelvalue === "moderate") {
+    bmr *= 1.55;
+  } else if (activityLevelvalue === "active") {
+    bmr *= 1.725;
+  } else {
+    bmr = 700;
+  }
+  console.log("Your bmr is -->  " + bmr);
 }
 
-//Fetch Meal By Id
+const generateMealFn = (event) => {
+  event.preventDefault();
 
-function getMealById(mealID) {
+  bmrCalculate();
+
+  if (breakFast.classList.contains("hidden")) {
+    breakFast.classList.remove("hidden");
+  }
+
+  if (lunch.classList.contains("hidden")) {
+    lunch.classList.remove("hidden");
+  }
+
+  if (dinner.classList.contains("hidden")) {
+    dinner.classList.remove("hidden");
+  }
+  let id = 0;
   fetch(
-    `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealID}`
+    "https://content.newtonschool.co/v1/pr/64995a40e889f331d43f70ae/categories"
   )
     .then((res) => res.json())
     .then((data) => {
-      const meal = data.meals[0];
-      addMealToDOM(meal);
+      const categories = data;
+      categories.map((e) => {
+        if (e.min <= bmr && e.max >= bmr) {
+          breakFast.innerHTML = `
+          <img id="mealImage" src="${e.breakfast.image}" alt="" height="180px" width="100%">
+          <div>
+              <p class="mealName">${e.breakfast.title}</p>
+              <p class="mealCalory">Ready in minutes ${e.breakfast.readyInMinutes}</p>
+              <button class="getMeal btn"  mealId="${e.breakfast.id}" >Get Recipe</button>
+          </div>`;
+
+          lunch.innerHTML = `
+          <img id="mealImage" src="${e.lunch.image}" alt="" height="180px" width="100%">
+          <div>
+              <p class="mealName">${e.lunch.title}</p>
+              <p class="mealCalory">Ready in minutes ${e.lunch.readyInMinutes}</p>
+              <button class="getMeal btn" mealId="${e.lunch.id}" >Get Recipe</button>
+          </div>`;
+
+          dinner.innerHTML = `
+          <img id="mealImage" src="${e.dinner.image}" alt="" height="180px" width="100%">
+          <div>
+              <p class="mealName">${e.dinner.title}</p>
+              <p class="mealCalory">Ready in minutes ${e.dinner.readyInMinutes}</p>
+              <button class="getMeal btn" mealId="${e.dinner.id}"   >Get Recipe ${e.dinner.id} </button>
+          </div>`;
+
+          const getRecipe = document.querySelectorAll(".getMeal");
+          console.log(getRecipe);
+          getRecipe.forEach((e) => {
+            e.onclick = (evt) => {
+              let mealid = evt.target.getAttribute("mealId");
+              console.log(mealid);
+
+              fetch(
+                "https://content.newtonschool.co/v1/pr/64996337e889f331d43f70ba/recipes"
+              )
+                .then((res) => res.json())
+                .then((data) => {
+                  data.forEach((e) => {
+                    if (e.id == mealid) {
+                      ingredients.innerHTML = `${e.ingredients}`;
+                      steps.innerHTML = `${e.steps}`;
+                    }
+                  });
+                });
+            };
+          });
+        }
+      });
     });
-}
+};
 
-//fetch Meal 
-function randomMeal(){
-    //Clear Meals and Heading
-    mealsEl.innerHTML='';
-    resultHeading.innerHTML='';
+// BMR = 655.1 + (9.563 x weight in kg) + (1.850 x height in cm) - (4.676 x age in years)
 
-    fetch(`https://www.themealdb.com/api/json/v1/1/random.php`)
-    .then(res => res.json())
-    .then(data => {
-        const meal = data.meals[0];
-        addMealToDOM(meal);
-    })
+// **For men**, BMR = 66.47 + (13.75 x weight in kg) + (5.003 x height in cm) - (6.755 x age in years)
 
-}
+// - **Lightly active (exercise 1–3 days/week)**: BMR x 1.375
+// - **Moderately active (exercise 3–5 days/week)**: BMR x 1.55
+// - **Active (exercise 6–7 days/week)**: BMR x 1.725
+generateMeal.addEventListener("click", generateMealFn);
 
-//Add meal to DOM
+const ingredientsBtn = document.getElementById("ingredientsBtn");
+const stepsBtn = document.getElementById("stepsBtn");
 
-function addMealToDOM(meal) {
-  const ingredients = [];
-  for (let i = 1; i <= 20; i++) {
-    if (meal[`strIngredient${i}`]) {
-      ingredients.push(
-        `${meal[`strIngredient${i}`]} - ${
-          meal[`strMeasure${i}`]
-        }`
-      );
-    }else{
-        break;
-    }
+const ingredientsTab = document.getElementById("ingredientsTab");
+const stepsTab = document.getElementById("stepsTab");
+
+ingredientsBtn.addEventListener("click", () => {
+  console.log("ingredientsBtn click");
+
+  if (stepsTab.classList.contains("active")) {
+    stepsTab.classList.remove("active");
   }
+  if (!ingredientsTab.classList.contains("active")) {
+    ingredientsTab.classList.add("active");
+  }
+});
 
-  single_mealEl.innerHTML = `
-  <div class="single-meal">
-  <h1>${meal.strMeal}</h1>
-  <img src="${meal.strMealThumb}" alt="${meal.strMeal}"/>
-  <div class="single-meal-info">
-  ${meal.strCategory ? `<p>${meal.strCategory}</p>` : ''}
-  ${meal.strArea ? `<p>${meal.strArea}</p>` : ''}
-  </div>
-  <div class="main">
-  <p>${meal.strInstructions}</p>
-  <h2>Ingredients</h2>
-  <ul>
-  ${ingredients.map(ing => `<li>${ing}</li>`).join('')}
-  </ul>
-  </div>
-  </div>
-
-  `
-}
-
-//Event Listerner
-submit.addEventListener("submit", searchMeal);
-random.addEventListener('click',randomMeal);
-mealsEl.addEventListener("click", (e) => {
-  const mealInfo = e.path.find((item) => {
-    if (item.classList) {
-      return item.classList.contains("meal-info");
-    } else {
-      return false;
-    }
-  });
-  if (mealInfo) {
-    const mealID = mealInfo.getAttribute(
-      "data-mealid"
-    );
-    getMealById(mealID);
+stepsBtn.addEventListener("click", () => {
+  console.log("stepsBtn click");
+  if (ingredientsTab.classList.contains("active")) {
+    ingredientsTab.classList.remove("active");
+  }
+  if (!stepsTab.classList.contains("active")) {
+    stepsTab.classList.add("active");
   }
 });
